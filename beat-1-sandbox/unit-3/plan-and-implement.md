@@ -19,7 +19,7 @@ bs-gitem
 
 **Plan comment**
 
-PENDING-LINK
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/54#issuecomment-6048482133
 
 Plan for #54. This is based on my repro on commit `2f4e82f`, Windows 11 and Python 3.13.
 
