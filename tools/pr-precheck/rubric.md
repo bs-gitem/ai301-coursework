@@ -1,0 +1,29 @@
+# Rubric: is this pull request ready to submit?
+
+<!--
+Written by Bailey Souza (bs-gitem) for AI301 Unit 4, 2026-10-14, with Claude Code as
+the drafting assistant. Built from my Unit 3 rubric, rewritten for a PR. Each check is
+a side-by-side read: the diff against the plan, the description against the diff, the
+evidence against the plan's test plan, the PR against the repo's stated asks. The
+calibration anchors shaped it: calib-01 ("looks thin, is ready") is why no check counts
+words, sections, or commits; calib-03 (the beautiful mystery) is why plan-fidelity reads
+every file in the diff against the plan BEFORE trusting the description's "no changes
+beyond the plan"; calib-04 is why decisive-test-evidence needs every failure mode the
+test plan names, not just the first. Honest outcome rule: a shortfall the plan and the
+description both disclose passes; a silent one fails.
+-->
+
+## Checks
+
+| Check | Evidence | Pass condition | Weight |
+|---|---|---|---|
+| plan-fidelity | Every file and every hunk in the diff, read against the plan's scope (in-scope work, named files, not-in-scope line) and any deviation or deferral note. Live: `git diff main...HEAD` against `plan.md` and its `## Deviations`. | Every hunk does work the plan names (the fix, its tests, a marker removal or doc the plan or the repo asks for) or a deviation note names it, AND every work item the plan promises is in the diff or is explicitly deferred with a reason in the plan note or the description. Fails on a hunk the plan never names: a new option, flag, or setting; a rename pass; a rewrite of a function the plan does not touch; a file outside the plan's boundary (calib-03). Fails on a promised item missing with no note (a planned docs update not in the diff). | required |
+| description-honest | Each factual claim in the PR description (what changed, which files, "exactly as planned", "no other changes", "docs now document X", "tests added") read against the diff and the commits. | Every claim the description makes about the change is true of the diff: nothing claimed that the diff does not contain, and no fidelity claim ("implements the plan exactly", "no functional changes outside X") over a diff that does more. A deferral the description states plainly passes. A terse description that claims little passes. | required |
+| decisive-test-evidence | The test-evidence section (live: `test_evidence.md` and the description's Testing section) read against the plan's test plan and the repro's own steps. | The evidence re-runs the plan's main repro (the issue's failing input or command, on the path the fix changes) and shows its observed after output matching the plan's expected outcome, with a before (or a reference to the reproduced before) for contrast. Every other failure mode or repro the test plan names must at least have its result stated (a second failure mode left unmentioned fails). Controls, extra cases, and the repo's checks or suite may be reported as a stated result ("controls unchanged", "cargo test: 312 pass", or a fail reported honestly with its reason); they do not need pasted output. Fails on: "tested locally / works on my machine / colors work now" with no observed output for the main repro; evidence that runs only a control or an unchanged path (single-file case, a GET when the bug is a POST); a failure mode the test plan names that the evidence never mentions; the plan's repro never shown. A regression test that exercises the fixed path and is shown passing counts as an after. | required |
+| clean-diff | The unified diff and the commit list. | The diff contains only the change and its tests. Fails on any debris: debug prints or log lines (live or commented out), commented-out code or first attempts, dead functions or `allow(dead_code)`/`_unused` helpers, TODOs added on untouched lines, import reshuffles or re-indent/formatting churn on lines the fix does not need, a hunk whose only content is identical lines deleted and re-added, or an unrelated drive-by edit. One stray debug line is enough to fail. Unchanged lines that appear as removed and re-added because the fix moves or reorders code inside a hunk that changes behavior are part of the change, not debris. | required |
+| repo-standards-met | The repo-facts block's PR template sections, contribution asks, and stated AI policy (live: `.github/PULL_REQUEST_TEMPLATE.md`, `docs/CONTRIBUTING.md`, `scope.md` house rules) read against the description and the diff. | Every section the repo's PR template or checklist requires is present with real content (an issue link such as "Closes #N" when the template asks for one, the checklist when one is required); every artifact the repo states it requires for a PR (a changelog or whatsnew entry, tests, a marker removal) is in the diff; and when the stated policy says AI use must be disclosed, the description discloses it in the author's own words, naming the tool and how it was used. No template and no AI policy impose nothing. A disclosure is required ONLY when the policy asks for one; a policy that only asks for a human in the loop is met by an own-words, issue-specific description. | required |
+| commit-hygiene | The commit list's messages. | Commit messages say what each commit does ("fix(parser): ...", "config: ..."). "wip", "fix", "misc cleanups while debugging" are noted. This never decides the verdict; debris inside those commits is clean-diff's to fail. | preferred |
+
+## Verdict rule
+
+accept if every `required` check passes. Any `required` check graded `fail` or `unclear` makes the verdict `reject`; `unclear` counts as fail, because a PR I cannot verify from the package is a PR that is not ready to submit. `commit-hygiene` is preferred and never changes the verdict. There is no third verdict: five required passes is accept, anything less is reject. An honestly disclosed shortfall (deferred in the plan's note and restated in the description) is not a fail on any check.
